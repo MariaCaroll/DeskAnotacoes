@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox prefHeight="344.0" prefWidth="378.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+   <children>
+      <Label text="Sobre">
+         <padding>
+            <Insets left="80.0" right="20.0" top="10.0" />
+         </padding>
+      </Label>
+      <TextArea disable="true" prefHeight="106.0" prefWidth="378.0" text="Systema para fazer anotaões de clientes da Well education 1, feito&#10;Feito apenas para teste&#10;Dúvidas entre em cotato com o dev&#10;carolfavola@gmail.com&#10;" />
+   </children>
+</VBox>
