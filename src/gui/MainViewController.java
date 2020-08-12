@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -15,6 +16,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.services.AnotacoesService;
+import model.services.EscolaWellService;
 
 public class MainViewController implements Initializable {
 	
@@ -25,57 +28,28 @@ public class MainViewController implements Initializable {
 	@FXML
 	private MenuItem menuItemCEscolasWell;
 	
-	@FXML
-	private MenuItem menuItemCColaborador;
 	
-	
-	//Editar
-	@FXML
-	private MenuItem menuItemEAnotacoes;
-	
-	@FXML
-	private MenuItem menuItemEEscolasWell;
-	
-	@FXML
-	private MenuItem menuItemEColaborador;
-	
-	@FXML
-	private MenuItem menuItemAbout;
 	
 
 	@FXML
 	public void onMenuItemCAnotacoesAction() {
-		System.out.println("Anotacoes");
+		loadView("/gui/AnotacoesForm.fxml", (AnotacoesListeControllerCriar controller) -> {
+			//controller.( new AnotacoesService());
+			//controller.updateTableView();
+		});
 	}
 	
 	@FXML
 	public void onMenuItemCEscolasWellAction() {
-		System.out.println("Escolas");
-	}
-	
-	@FXML
-	public void onMenuItemCColaboradorAction() {
-		System.out.println("Colaboradores");
-	}
-	
-	@FXML
-	public void onMenuItemEAnotacoesAction() {
-		System.out.println("editar anotacoes");
-	}
-	
-	@FXML
-	public void onMenuItemEEscolasWellAction() {
-		System.out.println("editar escolas");
-	}
-	
-	@FXML
-	public void onMenuItemEColaboradorAction() {
-		System.out.println("editat colar");
+		loadView("/gui/EscolasWellForm.fxml", (EscolasWellListController controller) -> {
+			controller.setEscolaWellService(new EscolaWellService());
+			controller.updateTableView();
+		});
 	}
 	
 	@FXML
 	public void onMenuItemAboutAction() {
-		loadView("/gui/About.fxml");
+		loadView("/gui/About.fxml", X ->{});
 	}
 	
 
@@ -85,7 +59,7 @@ public class MainViewController implements Initializable {
 		
 	}
 
-	private synchronized void loadView(String absoluteName) {
+	private synchronized <T> void loadView(String absoluteName, Consumer<T> initializingAction) {
 		
 		try {
 		
@@ -99,9 +73,14 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().clear();
 			mainVBox.getChildren().add(mainMenu);
 			mainVBox.getChildren().addAll(newVBox.getChildren());
+		
+			T controller = loader.getController();
+			initializingAction.accept(controller);
 		}
 		catch (IOException e) {
 			Alerts.showAlert("IO Exception", "Erro ao carregar a View", e.getMessage(), AlertType.ERROR);
 		}
 	}
+	
+	
 }

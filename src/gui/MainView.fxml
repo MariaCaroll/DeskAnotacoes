@@ -16,14 +16,6 @@
                   <items>
                     <MenuItem fx:id="menuItemCAnotacoes" mnemonicParsing="false" onAction="#onMenuItemCAnotacoesAction" text="Anotações" />
                         <MenuItem fx:id="menuItemCEscolasWell" mnemonicParsing="false" onAction="#onMenuItemCEscolasWellAction" text="Escolas Well" />
-                        <MenuItem fx:id="menuItemCColaborador" mnemonicParsing="false" onAction="#onMenuItemCColaboradorAction" text="Colaborador" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Editar">
-                  <items>
-                    <MenuItem fx:id="menuItemEAnotacoes" mnemonicParsing="false" onAction="#onMenuItemEAnotacoesAction" text="Anotaçoes" />
-                        <MenuItem fx:id="menuItemEEscolasWell" mnemonicParsing="false" onAction="#onMenuItemEEscolasWellAction" text="Escolas Well" />
-                        <MenuItem fx:id="menuItemEColaborador" mnemonicParsing="false" onAction="#onMenuItemEColaboradorAction" text="Colaborador" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
