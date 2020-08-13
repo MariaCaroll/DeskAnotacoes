@@ -3,12 +3,15 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbIntegrityException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +21,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -39,6 +44,12 @@ public class EscolasWellListController implements Initializable, DataChangeListe
 	
 	@FXML
 	private TableColumn<EscolasWell, String> tableColumnNome;
+	
+	@FXML
+	private TableColumn<EscolasWell, EscolasWell> tableColumnEDIT;
+	
+	@FXML
+	private TableColumn<EscolasWell, EscolasWell> tableColumnRemove;
 	
 	@FXML
 	private Button btnCriaEscolas;
@@ -81,6 +92,10 @@ public class EscolasWellListController implements Initializable, DataChangeListe
 		List<EscolasWell> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewEscolasWell.setItems(obsList);
+		
+		initEditButtons();
+		initRemoveButtons();
+		
 	}
 	
 	private void createDialogForm(EscolasWell obj,  String absoluteName, Stage parentStage) {
@@ -112,6 +127,59 @@ public class EscolasWellListController implements Initializable, DataChangeListe
 	public void ondataChanged() {
 		updateTableView();
 
+	}
+	
+	
+	private void initEditButtons() {
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEDIT.setCellFactory(param -> new TableCell<EscolasWell, EscolasWell>() {
+			private final Button button = new Button("editar");
+
+			@Override
+			protected void updateItem(EscolasWell obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(
+						event -> createDialogForm(obj, "/gui/EscolasWellInsert.fxml", Utils.currentStage(event)));
+			}
+		});
+	}
+	private void initRemoveButtons() {
+		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnRemove.setCellFactory(param -> new TableCell<EscolasWell, EscolasWell>() {
+			private final Button button = new Button("Excluir");
+
+			@Override
+			protected void updateItem(EscolasWell obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(event -> removeEntity(obj));
+			}
+		});
+	}
+	
+	private void  removeEntity(EscolasWell obj) {
+		Optional<ButtonType> result = Alerts.showConfirmation("Confirmação", "Deseja realmete excluir ?");
+		
+		if(result.get() == ButtonType.OK) {
+			if(service == null) {
+				throw new IllegalStateException("Serviço vazio");
+			}
+			try {
+				service.remove(obj);
+				updateTableView();
+			} catch (DbIntegrityException e) {
+				Alerts.showAlert("Erro ao deletar", null, e.getMessage(), AlertType.ERROR);
+			}
+		}
 	}
 
 
